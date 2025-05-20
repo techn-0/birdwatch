@@ -2,6 +2,7 @@ from fastapi import APIRouter, WebSocket
 from ..db import db
 from ..models import Detection
 from datetime import datetime
+from ..ws import manager
 
 router = APIRouter()
 sockets: list[WebSocket] = []     # 간단 브로드캐스트용
@@ -10,9 +11,7 @@ sockets: list[WebSocket] = []     # 간단 브로드캐스트용
 async def ingest(det: Detection):
     col = db[f"detections_{det.captured_at:%Y%m}"]
     await col.insert_one(det.dict())
-    # WebSocket 브로드캐스트
-    for ws in sockets:
-        await ws.send_json(det.dict())
+    await manager.broadcast(det.dict())       # 실시간 push
     return {"ok": True}
 
 @router.websocket("/ws")
