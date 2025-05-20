@@ -10,6 +10,7 @@ interface Det {
 }
 
 const bounds: L.LatLngBoundsExpression = [[0, 0], [647, 1000]]; // 배경 해상도 세로, 가로
+const API = process.env.REACT_APP_API_HTTP;   // http://localhost:8000
 
 export default function MapView({ detections }: { detections: Det[] }) {
   return (
@@ -29,7 +30,11 @@ export default function MapView({ detections }: { detections: Det[] }) {
             CCTV {d.cctv_id}<br />
             Risk: {d.risk}<br />
             {d.frame_url && (
-              <img src={d.frame_url} alt="frame" width={200} />
+              <img
+              src={`${API}${d.frame_url}`}
+              alt="frame"
+              width={200}
+              />
             )}
           </Popup>
         </Marker>
