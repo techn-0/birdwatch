@@ -1,25 +1,22 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import MapView from "./components/MapView";
+import SidePanel from "./components/SidePanel";
+import { useWebSocket } from "./hooks/useWebSocket";
 
 function App() {
+  const [dets, setDets] = useState<any[]>([]);
+
+  // WS로 새 데이터 받으면 배열 추가
+  useWebSocket(d => {
+  console.log("ARR PUSH", d);      // 디버깅 추가
+  setDets(prev => [...prev, d]);
+});
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <MapView detections={dets} />
+      <SidePanel />
+    </>
   );
 }
 
